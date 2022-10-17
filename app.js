@@ -1,10 +1,12 @@
 var express = require('express');
 var mongoose = require('mongoose')
 var app = express();
+const bodyParser = require('body-parser');
 
+app.use(bodyParser.urlencoded({ extended: false}));
+app.use(bodyParser.json());
 
 app.use('/static', express.static("public"));
-app.use(express.urlencoded({extended: true}))
 app.set("view engine", "ejs");
 
 const Todo = require('./models/todo.model')
@@ -25,7 +27,7 @@ app.get('/', function(req, res){
     })
 })
 // Created item in DB
-app.post('/', (req, res) =>{
+app.post('/create', (req, res) =>{
     let newTodo = new Todo({
         todo: req.body.content,
         done: false
@@ -39,9 +41,10 @@ app.post('/', (req, res) =>{
     })
 })
 //Modiefies item in DB
-app.put('/', (req, res) => {
+app.put('/done', (req, res) => {
     let id = req.body.id;
-    let err = {}
+    let err = null
+    console.log(req.body)
     if(typeof id === "string"){
         Todo.updateOne({_id: id}, {done: true}, function(error){
             if(error){
@@ -64,9 +67,9 @@ app.put('/', (req, res) => {
     }
 })
 
-app.delete('/', (req, res) => {
-    let id = req.body.check;
-    let err = {}
+app.delete('/delete/:id', (req, res) => {
+    let id = req.params.id;
+    let err;
     if(typeof id === "string"){
         Todo.deleteOne({_id: id}, function(error){
             if(error){
