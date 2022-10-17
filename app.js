@@ -2,6 +2,7 @@ var express = require('express');
 var mongoose = require('mongoose')
 var app = express();
 
+
 app.use('/static', express.static("public"));
 app.use(express.urlencoded({extended: true}))
 app.set("view engine", "ejs");
@@ -14,7 +15,14 @@ let db = mongoose.connection;
 db.on('error', console.error.bind(console, "MongoDB connection error: "))
 
 app.get('/', function(req, res){
-    res.render('todo.ejs');
+    Todo.find(function(err, todo){
+        console.log(todo)
+        if(err){
+            res.json({"Error: ": err})
+        } else {
+            res.render('todo.ejs', {todoList: todo});
+        }
+    })
 })
 // Created item in DB
 app.post('/', (req, res) =>{
@@ -26,13 +34,13 @@ app.post('/', (req, res) =>{
         if(err){
             res.json({"Error: ": err})
         } else {
-            res.json({"Status:": "Successful", "ObjectId": todo.id})
+            res.redirect('/');
         }
     })
 })
 //Modiefies item in DB
 app.put('/', (req, res) => {
-    let id = req.body.check;
+    let id = req.body.id;
     let err = {}
     if(typeof id === "string"){
         Todo.updateOne({_id: id}, {done: true}, function(error){
@@ -52,7 +60,7 @@ app.put('/', (req, res) => {
     if(err){
         res.json({"Error: ": err})
     } else {
-        res.json({"Status:": "Successful"})
+        res.redirect('/');
     }
 })
 
@@ -77,7 +85,7 @@ app.delete('/', (req, res) => {
     if(err){
         res.json({"Error: ": err})
     } else {
-        res.json({"Status:": "Successful"})
+        res.redirect('/');
     }
 })
 

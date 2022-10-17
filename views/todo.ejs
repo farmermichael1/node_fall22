@@ -1,10 +1,33 @@
 <!DOCTYPE html>
 <head>
-    <title>Todo Mongo Example</title>
+    <title>
+        Todo Mongo Example
+    </title>
     <link rel="stylesheet" href="/static/stylesheets/styles.css" type="text/css" />
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <!-- <link href="https://use.fontawesome.com/release/v5.8.2/css/allo.css" rel="stylesheet"-->
+    <script>
+        function done(todo){
+            const _id = todoTag.getAttribute("data-todoId");
+            console.log(_id)
+            fetch('/', {
+                method: 'PUT',
+                body: JSON.stringify({id: _id})
+            })
+            .then((response) => response.json())
+            .then((result) => {
+                console.log('Success:', result);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        }
+        function deleteItem(todo){
+            const id = todoTag.getAttribute("data-todoId");
+            console.log(id)
+        }
+    </script>
 </head>
 
 <body>
@@ -18,17 +41,20 @@
                 </button>
             </form>
             <ul class="todo-list">
+                <% todoList.forEach(function(todo){ %>
                 <li class="todo-list-item">
                     <div class="todo-list-item-name">
-                        First task
+                        <%= todo.todo %>
                     </div>
-                    <a href="" class="edit">
-                        <i class="fa fa-plus"></i>              
-                    </a>
-                    <a href="" class="remove">
+                    <button data-todoId="<%= todo._id %>" class="remove" onClick="done(this)">
                         <i class="fa fa-pencil"></i>
-                    </a>
+                    </button>
+                    <button data-todoId="<%= todo._id %>" class="edit" onClick="deleteItem(this)">
+                        <i class="fa fa-trash"></i>              
+                    </button>
+                    
                 </li>
+                <% }) %>
             </ul>
         </div>
     </div>
