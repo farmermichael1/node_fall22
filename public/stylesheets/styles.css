@@ -9,9 +9,8 @@ body{
 .wrapper {
     display: grid;
     grid-gap: 10px;
-    grid-template-columns: repeat(1, [col] 25% ) ;
-    grid-template-rows: repeat(2, [row] auto  );
-    width: 100%;
+    grid-template-columns: repeat(4, [col] 25% ) ;
+    grid-template-rows: repeat(3, [row] auto  );
   }
   .box {
     border-radius: 5px;
@@ -19,13 +18,13 @@ body{
     border-collapse: collapse;
   }
   comic {
-    grid-column: col;
-    grid-row: row 0;
+    grid-column: col / span 4;
+    grid-row: row 1;
   }
 
 .todo-container{
-    grid-column: col;
-    grid-row: row 1;
+    grid-column: col / span 4;
+    grid-row: row 2;
     color: white;
     position: absolute;
     top: 50%;
@@ -108,9 +107,3 @@ body{
 .todo-list-item .strike-through{
     text-decoration: line-through;
 }
-
-image {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-  }
