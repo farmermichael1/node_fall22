@@ -1,5 +1,6 @@
 var express = require('express');
 var mongoose = require('mongoose')
+var axios = require('axios')
 var app = express();
 const bodyParser = require('body-parser');
 
@@ -17,14 +18,20 @@ let db = mongoose.connection;
 db.on('error', console.error.bind(console, "MongoDB connection error: "))
 
 app.get('/', function(req, res){
-    Todo.find(function(err, todo){
-        console.log(todo)
-        if(err){
-            res.json({"Error: ": err})
-        } else {
-            res.render('todo.ejs', {todoList: todo});
-        }
+    axios.get('https://xkcd.com/info.0.json').then(function(response){
+        Todo.find(function(err, todo){
+            console.log(todo)
+            if(err){
+                res.json({"Error: ": err})
+            } else {
+                res.render('todo.ejs', {todoList: todo, comicData: response.data});
+            }
+        })
+    }).catch(function(error){
+        res.json({"Error: ": err})
     })
+    
+    
 })
 // Created item in DB
 app.post('/create', (req, res) =>{
